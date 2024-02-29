@@ -1,0 +1,12 @@
+#!/bin/sh
+PAN_MGMT=<hostname to connect to>
+FQDN=<hostname that is in the cert - probably same as $PAN_MGMT>
+EMAIL=<certbot email address>
+
+# Do not change below this line.
+CLOUDFLARE_CREDS=/credentials/cloudflare.ini
+API_KEY_CURL=$(cat /credentials/panrc_curl)
+API_KEY_PANXAPI=$(cat /credentials/panrc_panxapi)
+CERT_NAME=LetsEncrypt
+PANORAMA_PROFILE="Panorama-Profile"
+TEMP_PWD=$(openssl rand -hex 15)
