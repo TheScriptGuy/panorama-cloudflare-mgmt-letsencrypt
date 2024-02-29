@@ -5,26 +5,40 @@
 # Author:               TheScriptGuy (https://github.com/TheScriptGuy)
 
 # Load variables
+echo "Loading variables..."
 source /app/vars.sh
+echo "Loading variables done."
 
 # Run the certbot command to get a certificate
+echo "Certificate enrollment starting with Let's Encrypt"
 certbot certonly --dns-cloudflare --dns-cloudflare-credentials $CLOUDFLARE_CREDS -d $FQDN -n --agree-tos --email $EMAIL --force-renew
 
 # Check to see if the private key and certificate files exist.
+privkey_path="/etc/letsencrypt/live/$FQDN/privkey.pem"
+cert_path="/etc/letsencrypt/live/$FQDN/cert.pem"
+
 if [ ! -f "$privkey_path" ] || [ ! -f "$cert_path" ]; then
     echo "Required files do not exist:"
     [ ! -f "$privkey_path" ] && echo "$privkey_path is missing."
     [ ! -f "$cert_path" ] && echo "$cert_path is missing."
     exit 1
+else
+    echo "Certificate enrollment successful."
+    
+    # Split out all the certificates in the chain.pem file.
+    ./split-certs.sh $FQDN
+
+    #Depending on your setup, certbot may not give you separate files for the certificate and chain.  This script expects separate files.
+    echo "Creating the pkcs12 file from $privkey_path and $cert_path"
+    openssl pkcs12 -export -out letsencrypt_pkcs12.pfx -inkey /etc/letsencrypt/live/$FQDN/privkey.pem -in /etc/letsencrypt/live/$FQDN/cert.pem -passout pass:$TEMP_PWD
+    if [ $? -eq 0 ]; then
+        echo "File letsencrypt_pkcs12.pfx has been created."
+    else
+        exit 1
+    fi
 fi
 
 cd /app
-
-# Split out all the certificates in the chain.pem file.
-./split-certs.sh $FQDN
-
-#Depending on your setup, certbot may not give you separate files for the certificate and chain.  This script expects separate files.
-openssl pkcs12 -export -out letsencrypt_pkcs12.pfx -inkey /etc/letsencrypt/live/$FQDN/privkey.pem -in /etc/letsencrypt/live/$FQDN/cert.pem -passout pass:$TEMP_PWD
 
 if [ -f "letsencrypt_pkcs12.pfx" ]; then
 
