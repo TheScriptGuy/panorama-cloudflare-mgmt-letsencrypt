@@ -1,9 +1,22 @@
 #!/bin/sh
+# Last Updated:         2024/02/29
+# Version:              0.01
+# Description:          Downloads and updates the Let's Encrypt certificate on Panorama.
+# Author:               TheScriptGuy (https://github.com/TheScriptGuy)
+
 # Load variables
 source /app/vars.sh
 
 # Run the certbot command to get a certificate
 certbot certonly --dns-cloudflare --dns-cloudflare-credentials $CLOUDFLARE_CREDS -d $FQDN -n --agree-tos --email $EMAIL --force-renew
+
+# Check to see if the private key and certificate files exist.
+if [ ! -f "$privkey_path" ] || [ ! -f "$cert_path" ]; then
+    echo "Required files do not exist:"
+    [ ! -f "$privkey_path" ] && echo "$privkey_path is missing."
+    [ ! -f "$cert_path" ] && echo "$cert_path is missing."
+    exit 1
+fi
 
 cd /app
 
