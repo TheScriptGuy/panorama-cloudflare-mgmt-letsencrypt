@@ -13,10 +13,10 @@ read FQDN
 echo "Enter Cloudflare API key:"
 read CLOUDFLARE_CREDS
 
-echo "Enter Username:"
+echo "Enter API Username for Panorama:"
 read USERNAME
 
-echo "Enter Password (input will be hidden):"
+echo "Enter API Password for Panorama (input will be hidden):"
 read -s PASSWORD
 
 # Validate inputs (simple validation)
@@ -33,6 +33,22 @@ echo "dns_cloudflare_api_token = $CLOUDFLARE_CREDS" > credentials/cloudflare.ini
 
 # Create panrc_curl file with base64 encoded username:password
 echo "Authorization: Basic $(echo -n "$USERNAME:$PASSWORD" | base64)" > credentials/panrc_curl
+
+
+# Generate API key for $USERNAME
+response=$(curl -s -H "Content-Type: application/x-www-form-urlencoded" -X POST "https://$PAN_MGMT/api/?type=keygen" -d "user=$USERNAME&password=$PASSWORD")
+
+# Extract the KEY_VALUE from the XML response
+KEY_VALUE=$(echo $response | grep -oP '(?<=<key>).*?(?=</key>)')
+
+# Check if the KEY_VALUE exists and is not empty
+if [ -z "$KEY_VALUE" ]; then
+    echo "Failed to obtain KEY_VALUE from the response."
+    exit 1
+else
+    # Save the KEY_VALUE into panrc_panxapi file
+    echo "$KEY_VALUE" > credentials/panrc_panxapi
+fi
 
 echo "Setup complete."
 
