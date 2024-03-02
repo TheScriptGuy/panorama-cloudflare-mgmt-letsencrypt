@@ -1,4 +1,4 @@
-# Panorama Management Certificate & LetsEncrypt :lock: & Cloudflare :internet:
+# Panorama Management Certificate & LetsEncrypt :lock: & Cloudflare :cloud:
 
 Step right up! Step right up!
 
@@ -20,7 +20,7 @@ The idea behind this repository is to help with automating the renewal of the ma
 * An API Key used by curl to upload the Let's Encrypt Certificate and private key to Panorama (stored in `panrc_panxapi`)
 * A base64 encoded username:password value (stored in `panrc_curl`)
 
-### Docker
+### Docker :whale:
 * The ability to run docker on your host.
 
 ### Cron :time:
@@ -54,7 +54,7 @@ After this information is entered:
 3. A base64 encoded username:password pair is added to `credentials/panrc_curl` file
 4. An [API key](https://docs.paloaltonetworks.com/pan-os/11-0/pan-os-panorama-api/get-started-with-the-pan-os-xml-api/get-your-api-key) that was generated from Panorama when entering the username:password pair is added to `credentials/panrc_panxapi` file.
 
-## Docker
+## Docker :whale:
 ### Building the image
 Leverage the `build-image.sh` script to help build the image for you.
 
@@ -66,6 +66,6 @@ Run the `run.sh` script to run the container. This will:
 4. Update the `$PANORAMA_PROFILE` object to reference this newly uploaded certificate.
 5. Commit changes to Panorama <-- at this point, Panorama Management services will restart. It will output an error that the API call was problematic. Just wait for the services to restart before connecting.
 
-## :lightning: Important to note :lightning:
+## :zap: Important to note :zap:
 Let's encrypt has API limits and will only allow you to generate a limited amount of certificates for a single hostname in a small window. If you reach the limit, unfortunately you just have to wait for the window to lapse before trying again.
 
