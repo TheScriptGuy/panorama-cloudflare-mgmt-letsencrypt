@@ -19,6 +19,7 @@ The idea behind this repository is to help with automating the renewal of the ma
 ### Panorama
 * An API Key used by curl to upload the Let's Encrypt Certificate and private key to Panorama (stored in `panrc_panxapi`)
 * A base64 encoded username:password value (stored in `panrc_curl`)
+* A SSL/TLS Server Profile named `Panorama-Profile` must already exist on Panorama :zap:
 
 ### Docker :whale:
 * The ability to run docker on your host.
