@@ -11,7 +11,7 @@ echo "Loading variables done."
 
 # Run the certbot command to get a certificate
 echo "Certificate enrollment starting with Let's Encrypt"
-certbot certonly --dns-cloudflare --dns-cloudflare-credentials $CLOUDFLARE_CREDS -d $FQDN -n --agree-tos --email $EMAIL --force-renew
+certbot certonly --dns-cloudflare-propagation-seconds 30 --dns-cloudflare --dns-cloudflare-credentials $CLOUDFLARE_CREDS -d $FQDN -n --agree-tos --email $EMAIL --force-renew
 
 # Check to see if the private key and certificate files exist.
 privkey_path="/etc/letsencrypt/live/$FQDN/privkey.pem"
